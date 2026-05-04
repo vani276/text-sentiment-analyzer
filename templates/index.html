@@ -274,7 +274,6 @@
 <!-- NAV -->
 <nav>
 <div class="nav-right">
-    <a href="#how" class="nav-link">How it works</a>
     <a href="#analyzer" class="nav-link">Analyzer</a>
   </div>
 </nav>
@@ -283,41 +282,18 @@
 <section class="hero">
   <div class="hero-chip">Text Sentiment Analyzer</div>
   <h1>Know exactly how<br/>your text <em>feels</em></h1>
-  <p>Paste any text — a review, tweet, or paragraph — and instantly understand its emotional tone with confidence scores.</p>
+  <p>Enter any text — a review, tweet, or paragraph — and instantly understand its emotional tone with confidence scores.</p>
   <a href="#analyzer" class="hero-cta">Analyze your text →</a>
   <div class="hero-stats">
     <div class="stat-item">
   </div>
 </section>
-
-<!-- HOW IT WORKS -->
-<section class="how" id="how">
-  <div class="section-tag">how it works</div>
-  <h2>Three steps to sentiment clarity</h2>
-  <div class="steps">
-    <div class="step-card">
-      <div class="step-n">01 · INPUT</div>
-      <div class="step-title">Paste your text</div>
-      <div class="step-desc">Type or paste any English text — product reviews, tweets, feedback, articles, or anything else.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-n">02 · PROCESS</div>
-      <div class="step-title">NLP pipeline runs</div>
-      <div class="step-desc">Tokenization, stop-word removal, and a sentiment model score your text across all three classes.</div>
-    </div>
-    <div class="step-card">
-      <div class="step-n">03 · RESULTS</div>
-      <div class="step-title">Read the output</div>
-      <div class="step-desc">Get an overall verdict, confidence scores, key phrases, and text statistics — all in one clean view.</div>
-    </div>
-  </div>
 </section>
 
 <!-- ANALYZER -->
 <section id="analyzer">
   <div class="analyzer-inner">
     <div class="analyzer-head">
-    <div class="section-tag">live analyzer</div>
     </div>
 
     <div class="card">
@@ -330,7 +306,7 @@
       </div>
 
       <div class="textarea-wrap">
-        <textarea id="txt" placeholder="Type or paste your text here — a review, comment, tweet, or any paragraph..."></textarea>
+        <textarea id="txt" placeholder="Enter a text"></textarea>
         <div class="textarea-footer">
           <span class="word-count" id="wc">0 words</span>
           <button class="run-btn" id="runBtn" onclick="run()">Analyze →</button>
@@ -339,9 +315,6 @@
 
       <div id="results">
         <div class="empty-msg">
-          <div class="empty-icon">🔍</div>
-          Enter text above and click <strong>Analyze</strong> to see results
-        </div>
       </div>
     </div>
   </div>
