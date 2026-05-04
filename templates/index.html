@@ -379,78 +379,42 @@
     res.innerHTML = '<div class="empty-msg"><div class="empty-icon">🔍</div>Enter text above and click <strong>Analyze</strong> to see results</div>';
   }
 
-  function scoreSentiment(text) {
-    const posW = ['love','great','excellent','amazing','wonderful','fantastic','best','outstanding','helpful','recommend','appreciate','improvement','happy','enjoy','superb','perfect','brilliant','incredible','good','beautiful','smooth'];
-    const negW = ['terrible','bad','awful','horrible','worst','damaged','disappointed','frustrated','unhelpful','dismissive','never','confusing','unintuitive','poor','hate','broken','useless','failure','dreadful','delay'];
-    const t = text.toLowerCase();
-    let p = 0.15, n = 0.15;
-    posW.forEach(w => { if(t.includes(w)) p += 1 + Math.random() * 0.2; });
-    negW.forEach(w => { if(t.includes(w)) n += 1 + Math.random() * 0.2; });
-    const neu = 0.55;
-    const s = p + n + neu;
-    return { pos: p/s, neg: n/s, neu: neu/s };
-  }
-
-  function extractKeywords(text) {
-    const stop = new Set(['the','a','an','is','are','was','were','be','been','have','has','had','do','does','did','will','would','could','should','to','of','in','for','on','with','at','by','from','that','this','it','as','or','and','but','not','so','if','we','they','he','she','i','you','me','our','their','some','all','more','very','just','also','than','then','when','what','which','who','how','its','my','your','his','her','can','may','might','any','even','into','about','after','over','such','only','out','up','no','new']);
-    const ws = text.toLowerCase().replace(/[^\w\s]/g,'').split(/\s+/).filter(w => w.length > 3 && !stop.has(w));
-    const f = {};
-    ws.forEach(w => f[w] = (f[w]||0)+1);
-    return Object.entries(f).sort((a,b) => b[1]-a[1]).slice(0,6).map(e => e[0]);
-  }
-
   function run() {
-    const text = txtEl.value.trim();
-    if (!text) return;
-    btn.disabled = true; btn.textContent = 'Analyzing...';
-    res.innerHTML = '<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div>&nbsp;Analyzing sentiment...</div>';
+  const text = document.getElementById("txt").value.trim();
+  if (!text) return;
 
-    setTimeout(() => {
-      const sc  = scoreSentiment(text);
-      const lbl = sc.pos > sc.neg && sc.pos > sc.neu ? 'positive'
-                : sc.neg > sc.pos && sc.neg > sc.neu ? 'negative' : 'neutral';
-      const cls  = lbl === 'positive' ? 'pos' : lbl === 'negative' ? 'neg' : 'neu';
-      const conf = Math.round(Math.max(sc.pos, sc.neg, sc.neu) * 100);
-      const words = text.trim().split(/\s+/).length;
-      const sents = (text.match(/[.!?]+/g)||[]).length || 1;
-      const avgwl = Math.round(text.replace(/\s/g,'').length / words);
-      const kws   = extractKeywords(text);
+  const btn = document.getElementById("runBtn");
+  const res = document.getElementById("results");
 
-      hist.unshift({ text: text.slice(0,52) + (text.length > 52 ? '…' : ''), lbl, conf });
-      if (hist.length > 4) hist.pop();
+  btn.disabled = true;
+  btn.innerText = "Analyzing...";
 
-      const histHtml = hist.length > 1
-        ? `<div class="history-section">
-            <div class="history-title">recent analyses</div>
-            ${hist.slice(1).map(h => `
-              <div class="h-row">
-                <span class="h-txt">${h.text}</span>
-                <span class="h-tag ${h.lbl === 'positive' ? 'pos' : h.lbl === 'negative' ? 'neg' : 'neu'}">${h.lbl}</span>
-                <span class="h-conf">${h.conf}%</span>
-              </div>`).join('')}
-          </div>` : '';
+  res.innerHTML = "Analyzing...";
 
-      res.innerHTML = `
-        <div class="verdict ${cls}">
-          <div>
-            <div class="verdict-tag">overall sentiment</div>
-            <div class="verdict-label">${lbl}</div>
-          </div>
-            <div class="verdict-score">${conf}%
-          </div>
-        </div>
+  fetch("http://127.0.0.1:5000/predict", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ text: text })
+  })
+  .then(response => response.json())
+  .then(data => {
 
-        <div class="two-col">
-          <div class="mini-card">
-        </div>
+    res.innerHTML = `
+      <h2>Result: ${data.prediction}</h2>
+      <h3>Confidence: ${data.confidence}%</h3>
+    `;
 
-        ${histHtml}
-      `;
-
-      btn.disabled = false;
-      btn.textContent = 'Analyze →';
-    }, 750);
-  }
+    btn.disabled = false;
+    btn.innerText = "Analyze →";
+  })
+  .catch(error => {
+    res.innerHTML = "Error connecting to backend";
+    btn.disabled = false;
+    btn.innerText = "Analyze →";
+  });
+}
 </script>
 </body>
 </html>
