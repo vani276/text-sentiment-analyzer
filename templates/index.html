@@ -349,8 +349,7 @@
   function load(k) { txtEl.value = samples[k]; txtEl.dispatchEvent(new Event('input')); }
   function clearAll() {
     txtEl.value = ''; txtEl.dispatchEvent(new Event('input'));
-    res.innerHTML = '<div class="empty-msg"><div class="empty-icon">🔍</div>Enter text above and click <strong>Analyze</strong> to see results</div>';
-  }
+    }
 
   function run() {
   const text = document.getElementById("txt").value.trim();
